@@ -52,22 +52,43 @@ jobs:
             gradlePath: app/build.gradle.kts
             versionCode: ${{ github.run_number }}
 
+      - name: Decode Base64 keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+            echo "$ANDROID_KEYSTORE" | base64 --decode > keystore.jks
+
       - name: Build release APK
         run: ./gradlew assembleRelease
 
-      - name: Debug APK path
-        run: ls -la $GITHUB_WORKSPACE/app/build/outputs/apk/release/
+      - name: Align APK
+        run: |
+          $ANDROID_HOME/build-tools/<version>/zipalign -v -p 4 \
+          $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-unsigned.apk \
+          $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-aligned.apk
 
       - name: Sign APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore $ANDROID_KEYSTORE \
-          -storepass $KEYSTORE_PASSWORD \
-          -keypass $KEY_PASSWORD \
-          $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-unsigned.apk $KEY_ALIAS
+          -keystore keystore.jks \
+          -storepass "$KEYSTORE_PASSWORD" \
+          -keypass "$KEY_PASSWORD" \
+          app/build/outputs/apk/release/app-release-aligned.apk "$KEY_ALIAS"
+
+      - name: Verify signed APK
+        run: |
+          $ANDROID_HOME/build-tools/33.0.2/apksigner verify \
+          app/build/outputs/apk/release/app-release-aligned.apk
+
+      - name: Cleanup keystore
+        run: rm keystore.jks
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: release-apk
+          name: signed-apk
           path: app/build/outputs/apk/release/*.apk
