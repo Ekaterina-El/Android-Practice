@@ -40,6 +40,9 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
+      - name: Grand execute permissions for gradlew
+        run: chmod +x gradlew
+
       - name: Install dependencies
         run: ./gradlew dependencies
 
