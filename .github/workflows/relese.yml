@@ -100,8 +100,8 @@ jobs:
 
 
       - name: Cleanup
-        run:
-          rm keystore.jks
+        run: |
+          rm keystore.jks 
           rm app-release-unsigned.apk
           rm app-release-signed.apk
           rm app-debug.apk
