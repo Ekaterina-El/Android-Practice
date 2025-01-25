@@ -63,7 +63,7 @@ jobs:
 
       - name: Align APK
         run: |
-          $ANDROID_HOME/build-tools/<version>/zipalign -v -p 4 \
+          $ANDROID_HOME/build-tools/33.0.2/zipalign -v -p 4 \
           $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-unsigned.apk \
           $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-aligned.apk
 
@@ -80,7 +80,7 @@ jobs:
           -keystore keystore.jks \
           -storepass "$KEYSTORE_PASSWORD" \
           -keypass "$KEY_PASSWORD" \
-          app/build/outputs/apk/release/app-release-aligned.apk "$KEY_ALIAS"
+          app/build/outputs/apk/release/app-release-unsigned.apk "$KEY_ALIAS"
 
       - name: Verify signed APK
         run: |
