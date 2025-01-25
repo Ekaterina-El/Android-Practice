@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
             CICDPracticTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
                     Text(
-                        text = "CI-CD-Practic",
+                        text = "CI-CD-Practic [TEST]",
                     )
                 }
             }
