@@ -67,6 +67,9 @@ jobs:
           $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-unsigned.apk \
           $GITHUB_WORKSPACE/app/build/outputs/apk/release/app-release-aligned.apk
 
+      - name: Debug APK path
+        run: ls -la $GITHUB_WORKSPACE/app/build/outputs/apk/release/
+
       - name: Sign APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
