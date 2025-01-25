@@ -61,6 +61,12 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleRelease
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33
+          build-tools: 33.0.2
+
       - name: Install build-tools
         run: sdkmanager "build-tools;33.0.2"
 
