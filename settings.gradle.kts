@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "CI-CD-Practic"
 include(":app")
- 
+include(":feature-loger")
+include(":utils")
